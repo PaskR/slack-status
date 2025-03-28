@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/inc/functions.php';
+
+require_once __DIR__ . '/libs/Config.php';
+require_once __DIR__ . '/libs/SlackStatus.php';
+
+use App\Config;
+use App\SlackStatus;
+
+$slack = new SlackStatus(new Config());
+
+$command = $argv[1] ?? null;
+$arg = $argv[2] ?? null;
+
+try {
+    switch ($command) {
+        case 'login':
+            $slack->authenticate();
+            break;
+
+        case 'change':
+            if (!$arg) {
+                writeln("Usage: php slack-status change [type]");
+                exit(1);
+            }
+            $slack->updateStatus($arg);
+            break;
+
+        case 'presets-list':
+            $slack->listPresets();
+            break;
+
+        default:
+            writeln("Usage:");
+            writeln("  php slack-status login");
+            writeln("  php slack-status change [type]");
+            writeln("  php slack-status presets-list");
+            exit(1);
+    }
+} catch (JsonException $e) {
+    writeln("❌ Erreur : {$e->getMessage()}");
+}

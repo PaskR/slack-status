@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'sport' => [
+        'text' => 'En séance de sport',
+        'emoji' => ':muscle:',
+    ],
+    'ecole1' => [
+        'text' => 'Dépose à l’école',
+        'emoji' => ':school:',
+        'expiration' => 10, // Minutes
+    ],
+    'pause' => [
+        'text' => 'Petite pause',
+        'emoji' => ':coffee:',
+    ],
+    'dev' => [
+        'text' => 'Focus code',
+        'emoji' => ':computer:',
+    ],
+];
