@@ -16,11 +16,12 @@ class SlackStatus
 
     private array $presets;
 
-    public function __construct(Config $config)
+    public function __construct()
     {
-        $this->clientId = $config->get('SLACK_CLIENT_ID');
-        $this->clientSecret = $config->get('SLACK_CLIENT_SECRET');
-        $this->redirectUri = $config->get('REDIRECT_URI');
+        $config = new Config();
+        $this->clientId = $config->getEnv('SLACK_CLIENT_ID');
+        $this->clientSecret = $config->getEnv('SLACK_CLIENT_SECRET');
+        $this->redirectUri = $config->getEnv('REDIRECT_URI');
         $this->tokenFile = $config->getTokenPath();
         $this->token = $config->getToken();
         $this->presets = $config->getPresets();
@@ -31,22 +32,22 @@ class SlackStatus
      */
     public function authenticate(): void
     {
-        writeln("👉 Ouvre cette URL dans ton navigateur :");
-        writeln();
-        writeln("https://slack.com/oauth/v2/authorize?" . http_build_query(['client_id' => $this->clientId, 'user_scope' => 'users.profile:write', 'redirect_uri' => $this->redirectUri]));
-        writeln();
-        writeln("✅ Une fois autorisé, colle ici le paramètre code=... de l'URL de redirection :");
-        writeln();
-        write("> ");
+        Output::writeln("👉 Ouvre cette URL dans ton navigateur :");
+        Output::writeln();
+        Output::writeln("https://slack.com/oauth/v2/authorize?" . http_build_query(['client_id' => $this->clientId, 'user_scope' => 'users.profile:write', 'redirect_uri' => $this->redirectUri]));
+        Output::writeln();
+        Output::writeln("✅ Une fois autorisé, colle ici le paramètre code=... de l'URL de redirection :");
+        Output::writeln();
+        Output::write("> ");
         $code = trim(fgets(STDIN));
-        writeln();
+        Output::writeln();
 
         $response = $this->httpPost('https://slack.com/api/oauth.v2.access', http_build_query(['client_id' => $this->clientId, 'client_secret' => $this->clientSecret, 'code' => $code, 'redirect_uri' => $this->redirectUri]));
         if (!empty($response['authed_user']['access_token'])) {
             file_put_contents($this->tokenFile, $response['authed_user']['access_token']);
-            writeln("✅ Token Slack enregistré dans .token");
+            Output::writeln("✅ Token Slack enregistré dans .token");
         } else {
-            writeln("❌ Erreur lors de l'échange du code :");
+            Output::writeln("❌ Erreur lors de l'échange du code :");
             print_r($response);
         }
     }
@@ -57,7 +58,7 @@ class SlackStatus
     public function updateStatus(string $type): void
     {
         if (!$this->token) {
-            writeln("❌ Aucun token Slack trouvé. Lancez d'abord 'login'.");
+            Output::writeln("❌ Aucun token Slack trouvé. Lancez d'abord 'login'");
             exit(1);
         }
 
@@ -67,8 +68,8 @@ class SlackStatus
                 $status = ['text' => '', 'emoji' => ''];
                 $reset = true;
             } else {
-                writeln("❌ Type inconnu : $type");
-                writeln("Types disponibles : " . implode(', ', array_keys($this->presets)) . " ou " . self::RESET_PRESET . " réinitialiser le status");
+                Output::writeln("❌ Type inconnu : $type");
+                Output::writeln("Types disponibles : " . implode(', ', array_keys($this->presets)) . " ou " . self::RESET_PRESET . " réinitialiser le status");
                 exit(1);
             }
         } else {
@@ -93,22 +94,23 @@ class SlackStatus
 
         if ($response['ok'] ?? false) {
             if ($reset) {
-                writeln("✅ Statut Slack réinitialisé");
+                Output::writeln("✅ Statut Slack réinitialisé");
             } else {
-                writeln("✅ Statut Slack mis à jour : {$status['emoji']} {$status['text']}" . (0 !== $expiration ? ' (expire le ' . date('d/m/Y à H:i:s', $expiration) . ')' : ''));
+                Output::writeln("✅ Statut Slack mis à jour : {$status['emoji']} {$status['text']}" . (0 !== $expiration ? ' (expire le ' . date('d/m/Y à H:i:s', $expiration) . ')' : ''));
             }
         } else {
-            writeln("❌ Erreur Slack : " . ($response['error'] ?? 'Réponse inconnue'));
+            Output::writeln("❌ Erreur Slack : " . ($response['error'] ?? 'Réponse inconnue'));
         }
     }
 
     public function listPresets(): void
     {
-        writeln("📋 Statuts disponibles :");
+        Output::writeln("📋 Statuts disponibles :");
         foreach ($this->presets as $key => $data) {
-            writeln("🔸 $key → {$data['emoji']} {$data['text']}");
+            Output::writeln("🔸 $key → {$data['emoji']} {$data['text']}");
         }
-        writeln("🔸 " . self::RESET_PRESET . " → réinitialisé le status");
+        Output::writeln("----------");
+        Output::writeln("🔸 " . self::RESET_PRESET . " → Réinitialise le status");
     }
 
     /**

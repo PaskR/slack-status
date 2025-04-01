@@ -1,0 +1,22 @@
+{
+  "name": "arkdev/slack-status",
+  "description": "Utilitaire CLI pour changer son statut Slack avec support OAuth.",
+  "type": "project",
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "libs/"
+    }
+  },
+  "scripts": {
+    "login": "php bin/slack-status login",
+    "presets": "php bin/slack-status presets-list"
+  },
+  "config": {
+    "optimize-autoloader": true
+  },
+  "license": "MIT",
+  "minimum-stability": "stable"
+}

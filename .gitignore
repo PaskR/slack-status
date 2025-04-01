@@ -1,3 +1,5 @@
+cache/*
+!cache/.gitkeep
+config/presets.php
+vendor/
 .env
-.token
-presets.php

@@ -1,15 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/inc/functions.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-require_once __DIR__ . '/libs/Config.php';
-require_once __DIR__ . '/libs/SlackStatus.php';
-
-use App\Config;
+use App\Output;
 use App\SlackStatus;
 
-$slack = new SlackStatus(new Config());
+$slack = new SlackStatus();
 
 $command = $argv[1] ?? null;
 $arg = $argv[2] ?? null;
@@ -22,7 +19,7 @@ try {
 
         case 'change':
             if (!$arg) {
-                writeln("Usage: php slack-status change [type]");
+                Output::writeln("Usage: php slack-status change [type]");
                 exit(1);
             }
             $slack->updateStatus($arg);
@@ -33,12 +30,12 @@ try {
             break;
 
         default:
-            writeln("Usage:");
-            writeln("  php slack-status login");
-            writeln("  php slack-status change [type]");
-            writeln("  php slack-status presets-list");
+            Output::writeln("Usage:");
+            Output::writeln("  php slack-status login");
+            Output::writeln("  php slack-status change [type]");
+            Output::writeln("  php slack-status presets-list");
             exit(1);
     }
 } catch (JsonException $e) {
-    writeln("❌ Erreur : {$e->getMessage()}");
+    Output::writeln("❌ Erreur : {$e->getMessage()}");
 }

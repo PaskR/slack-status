@@ -20,17 +20,21 @@ Un outil en ligne de commande pour :
 ## 🚀 Installation rapide
 
 1. **Cloner le projet**
-2. Copier les fichiers de config :
+2. Installer le projet (avec composer)
+   ```bash
+   composer install
+   ```
+3. Copier les fichiers de config :
    ```bash
    cp .env.dist .env
-   cp status-presets.php.dist status-presets.php
+   cp config/presets.php.dist config/presets.php
    ```
 
-3. Dans `.env`, renseigner les variables :
+4. Dans `.env`, renseigner les variables :
    ```
    SLACK_CLIENT_ID=...
    SLACK_CLIENT_SECRET=...
-   REDIRECT_URI=http://localhost:8888/callback
+   WEB_SECRET_TOKEN=...
    ```
 
 4. Dans ton app Slack (via https://api.slack.com/apps) :
@@ -45,7 +49,7 @@ Un outil en ligne de commande pour :
 Lance cette commande pour lier ton compte Slack :
 
 ```bash
-php slack-status login
+php bin/slack-status login
 ```
 
 Tu verras une URL à ouvrir dans ton navigateur.
@@ -58,14 +62,14 @@ Tu verras une URL à ouvrir dans ton navigateur.
 ## ✏️ Changer ton statut Slack
 
 ```bash
-php slack-status change [type]
+php bin/slack-status change [type]
 ```
 
 Par exemple :
 
 ```bash
-php slack-status change sport
-php slack-status change reset # Pour réinitialiser son status
+php bin/slack-status change sport
+php bin/slack-status change reset # Pour réinitialiser son status
 ```
 
 Le script utilise les presets définis dans `status-presets.php`.
@@ -77,12 +81,12 @@ Le script utilise les presets définis dans `status-presets.php`.
 Pour voir tous les types disponibles depuis les presets :
 
 ```bash
-php slack-status presets-list
+php bin/slack-status presets-list
 ```
 
 ---
 
-## ⚙️ Personnaliser les statuts (`status-presets.php`)
+## ⚙️ Personnaliser les statuts (`config/presets.php`)
 
 Tu peux modifier ou ajouter tes propres statuts dans ce fichier :
 
@@ -105,15 +109,23 @@ return [
 ];
 ```
 
-> 💡 Le fichier `status-presets.php.dist` est versionné, mais pas `status-presets.php` (pense à faire un `cp` au premier lancement).
+> 💡 Le fichier `config/presets.php.dist` est versionné, mais pas `config/presets.php` (pense à faire un `cp` au premier lancement).
 
 ---
 
-## 🧹 Fichiers sensibles à ne pas versionner (déjà dans `.gitignore`)
+## 🌐 Utilisation web (index.php)
 
+Tu peux aussi déclencher le changement de statut via une URL HTTP, en appelant le script web/index.php.
+
+Exemple d'URL :
 ```
-.env
-.token
-status-presets.php
+http://ton-site.local/web/index.php?status=sport&token=monSuperToken
+http://ton-site.local/?status=sport&token=monSuperToken
 ```
 
+Paramètres :
+- `status` : le nom du statut à appliquer (doit exister dans les presets)
+- `token` : une clé secrète pour authentifier l'appel et éviter les abus
+
+> ⚠️ Le fichier index.php utilise shell_exec() pour appeler bin/slack-status. 
+> Assure-toi que les chemins sont bien corrigés selon sa nouvelle position dans /web/.

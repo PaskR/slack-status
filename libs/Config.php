@@ -8,7 +8,7 @@ class Config
     private string $tokenPath;
     private array $presets;
 
-    public function __construct(string $envPath = __DIR__ . '/../.env', string $tokenPath = __DIR__ . '/../.token', string $presetsPath = __DIR__ . '/../presets.php')
+    public function __construct(string $envPath = __DIR__ . '/../.env', string $tokenPath = __DIR__ . '/../cache/.token', string $presetsPath = __DIR__ . '/../config/presets.php')
     {
         $this->env = $this->loadEnv($envPath);
         $this->tokenPath = $tokenPath;
@@ -20,7 +20,7 @@ class Config
     private function loadEnv(string $path): array
     {
         if (!file_exists($path)) {
-            writeln("Fichier .env introuvable : $path");
+            Output::writeln("Fichier .env introuvable : $path");
             exit(1);
         }
 
@@ -35,7 +35,7 @@ class Config
         return $vars;
     }
 
-    public function get(string $key): ?string
+    public function getEnv(string $key): ?string
     {
         return $this->env[$key] ?? null;
     }
