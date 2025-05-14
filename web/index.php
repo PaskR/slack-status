@@ -18,4 +18,4 @@ if ((new Config())->getEnv('WEB_SECRET_TOKEN') !== ($_GET['token'] ?? null)) {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-echo json_encode(['output' => shell_exec(sprintf('%s change %s', __DIR__ . '/bin/slack-status', escapeshellarg($status)))], JSON_THROW_ON_ERROR);
+echo json_encode(['output' => shell_exec(sprintf('%s change %s', __DIR__ . '/../bin/slack-status', escapeshellarg($status)))], JSON_THROW_ON_ERROR);
