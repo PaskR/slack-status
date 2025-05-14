@@ -125,7 +125,7 @@ http://ton-site.local/?status=sport&token=webSecretToken
 
 Paramètres :
 - `status` : le nom du statut à appliquer (doit exister dans les presets)
-- `token` : une clé secrète pour authentifier l'appel et éviter les abus
+- `token` : une clé secrète pour authentifier l'appel et éviter les abus (correspondant à la valeur configurée dans WEB_SECRET_TOKEN)
 
 > ⚠️ Le fichier index.php utilise shell_exec() pour appeler bin/slack-status. 
 > Assure-toi que les chemins sont bien corrigés selon sa nouvelle position dans /web/.
