@@ -119,8 +119,8 @@ Tu peux aussi déclencher le changement de statut via une URL HTTP, en appelant 
 
 Exemple d'URL :
 ```
-http://ton-site.local/web/index.php?status=sport&token=monSuperToken
-http://ton-site.local/?status=sport&token=monSuperToken
+http://ton-site.local/web/index.php?status=sport&token=webSecretToken
+http://ton-site.local/?status=sport&token=webSecretToken
 ```
 
 Paramètres :
