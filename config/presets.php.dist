@@ -4,6 +4,7 @@ return [
     'sport' => [
         'text' => 'En séance de sport',
         'emoji' => ':muscle:',
+        'expiration' => 15, // Durée du statut en minutes
     ],
     'ecole1' => [
         'text' => 'Dépose à l’école',
