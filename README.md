@@ -97,6 +97,7 @@ return [
     'sport' => [
         'text' => 'En séance de sport',
         'emoji' => ':muscle:',
+        'expiration' => 15, // Durée du statut en minutes
     ],
     'pause' => [
         'text' => 'Pause café',
